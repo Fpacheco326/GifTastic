@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Giftastic</title>
+</head>
+
+<body>
+
+    <input type="text" id="giphy" placeholder="search for a RillaGiph">
+
+    <button id="rillaGiph">Choose a Comicbook Character</button>
+
+    <div id="rillaGiphs"></div>
+
+    <div id="charPics"></div>
+
+
+
+    <!-- <img src="https://media4.giphy.com/media/AqfOVseMPDVja/480w_s.jpg" /> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        // Example queryURL for Giphy API
+
+
+        var topics = ["The Joker", "Batman", "Robin", "Superman", "The Flash", "Wonder Woman", "Aquaman", "The Riddler", "Scarecrow", "Penguin"];
+
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=";
+
+        var APIkey = "&api_key=JVVaQR6jhJW3JBcYx0zH4Hrm77T1zSAN&limit=10";
+
+
+
+
+        for (var i = 0; i < topics.length; i++) {
+            var create = $("<button>");
+            create.addClass("giphy");
+            create.text(topics[i]);
+            $("#rillaGiphs").append(create);
+            // console.log(topics);
+            // console.log(create);
+        }
+
+        $('#rillaGiph').on('click', function () {
+            // console.log('hello');
+            var newButton = $('<button>');
+
+            // var rillaGiphs
+
+            var rillaGiphText = $('#giphy').val();
+
+            newButton.addClass('giphy');
+
+            newButton.text(rillaGiphText);
+
+            $('#rillaGiphs').append(newButton);
+
+            // console.log(rillaGiphText);
+
+            // console.log(newButton);
+            // topics.push(newButton);
+
+        });
+
+        $(document).on('click', '.giphy', function () {
+            var clickA = $(this);
+            $.ajax({
+                url: queryURL + clickA.text() + APIkey,
+                method: "GET"
+            }).then(function (response) {
+                for (var i = 0; i < response.data.length; i++) {
+                    console.log(response);
+                    var imgPull = response.data[i].images.fixed_height_still.url
+                    var imgAni = response.data[i].images.fixed_height.url
+                    var create = $("<img>");
+                    var box = $("<div>");
+                    var rati =$("<div>");
+                    rati.text("Rating: "+response.data[i].rating);
+                    create.attr("src", imgPull);
+                    create.attr('data-state', 'still');
+                    create.attr('data-still', imgPull);
+                    create.attr('data-animate', imgAni);
+                    box.append(create, rati);
+                    $("#charPics").prepend(box);
+                }
+            });
+        });
+
+
+        $(document).on('click', 'img', function () {
+            var state = $(this).attr('data-state');
+
+            if (state == 'still') {
+
+                var anim = $(this).attr('data-animate');
+
+                $(this).attr('src', anim)
+
+                $(this).attr('data-state', 'animate');
+            } else {
+                var still = $(this).attr('data-still');
+
+                $(this).attr('src', still)
+
+                $(this).attr('data-state', 'still');
+            }
+        });
+
+
+
+
+    </script>
+
+</body>
+
+</html>
